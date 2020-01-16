@@ -1,46 +1,40 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDied);
+
 class UDamageType;
 class AController;
 class AActor;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, Health);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDied);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class LUXSHOOTER_API UHealthComponent : public UActorComponent
 {
 	GENERATED_BODY()
-	
-	
+
 	float CurrentHealth;
 
 	UFUNCTION()
-	void OnOwnerTakenDamage(AActor* DamageActor, float Damage, const UDamageType* DamageType,
+	void OnOwnerTakenDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType,
 		AController* InstigatedBy, AActor* DamageCauser);
 
 public:	
-	// Sets default values for this component's properties
 	UHealthComponent();
 
-	//Max Player health
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
 	float MaxHealth;
 
-	//Starting Health
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
 	float StartingHealth;
 
-	UFUNCTION(BlueprintPure, Category = "Health")
+	UFUNCTION(BlueprintPure, Category = "Health") //Pure means no pin in blueprint
 	float GetCurrentHealth();
 
-	UFUNCTION(BlueprintPure, Category = "Health")
+	UFUNCTION(BlueprintPure, Category = "Health") //Pure means no pin in blueprint
 	bool GetIsDead();
 
 	UPROPERTY(BlueprintAssignable, Category = "Health")
@@ -50,12 +44,11 @@ public:
 	FOnDied OnDied;
 
 protected:
-	// Called when the game starts
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-		
+private:
+
 };
